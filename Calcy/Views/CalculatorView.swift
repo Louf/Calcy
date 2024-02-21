@@ -173,7 +173,7 @@ struct CalculatorView: View {
             lastCalculation = ""
         case "+/-":
             if displayValue != "0", let value = Double(displayValue) {
-                displayValue = String(value * -1)
+                displayValue = integerCheck(result: value * -1)
             }
         case "%":
             if let value = Double(displayValue) {
@@ -196,14 +196,14 @@ struct CalculatorView: View {
                 lastCalculation = ""
             }
         case "÷", "×", "-", "+":
-            if currentOperation == nil {
+            if currentOperation == nil && !(displayValue == ".") {
                 currentOperation = button
                 lastCalculation += "\(displayValue) "
                 previousValue = displayValue
                 displayValue = "0"
                 pressedEquals = false
-                
-            } else {
+                //Make sure we can't do an operation if the user just puts a decimal point with nothing else
+            } else if !(displayValue == ".") {
                 currentOperation = button
             }
         default:
@@ -215,14 +215,16 @@ struct CalculatorView: View {
                 }
             }
             
-            if displayValue == "0" || currentOperation != nil && previousValue == nil {
-                displayValue = button
-            } else {
-                if pressedEquals == true {
+            if !(displayValue.contains(".") && button == ".") {
+                if displayValue == "0" || currentOperation != nil && previousValue == nil {
                     displayValue = button
-                    pressedEquals = false
                 } else {
-                    displayValue += button
+                    if pressedEquals == true {
+                        displayValue = button
+                        pressedEquals = false
+                    } else {
+                        displayValue += button
+                    }
                 }
             }
         }
@@ -238,12 +240,45 @@ struct CalculatorView: View {
             if let operation = operationMap[characters] {
                 self.handleButtonPress(button: operation)
             }
+        case "\u{8}", "\u{7f}": // Backspace
+            self.backspace()
         case "=", "\r":
             self.handleButtonPress(button: "=")
         case "c", "C": // 'C' to clear
             self.handleButtonPress(button: "AC")
+        case ".":
+            self.handleButtonPress(button: ".")
         default:
             break
+        }
+    }
+    
+    private func backspace() {
+        guard !displayValue.isEmpty else { return }
+        displayValue.removeLast()
+        if displayValue.isEmpty || displayValue == "-" { // Reset to "0" if empty or only a negative sign is left
+            displayValue = "0"
+        }
+    }
+    
+    private func integerCheck(result: Double) -> String {
+        // Check if the result is an integer
+        if result.truncatingRemainder(dividingBy: 1) == 0 {
+            // Check if the result fits within Int64 range
+            if result >= Double(Int64.min) && result <= Double(Int64.max) {
+                return String(Int64(result))
+            } else {
+                // For numbers outside the Int64 range, return the string representation of the result directly
+                // This retains the whole number appearance without '.0'
+                let numberFormatter = NumberFormatter()
+                numberFormatter.numberStyle = .decimal
+                numberFormatter.maximumFractionDigits = 0 // Avoid decimal places for whole numbers
+                let number = NSNumber(value: result)
+                return numberFormatter.string(from: number) ?? "Error"
+            }
+        } else {
+            // For non-whole numbers, return as is with decimals
+            return String(result)
         }
     }
     
@@ -267,24 +302,7 @@ struct CalculatorView: View {
             return "0"
         }
 
-        // Check if the result is an integer
-        if result.truncatingRemainder(dividingBy: 1) == 0 {
-            // Check if the result fits within Int64 range
-            if result >= Double(Int64.min) && result <= Double(Int64.max) {
-                return String(Int64(result))
-            } else {
-                // For numbers outside the Int64 range, return the string representation of the result directly
-                // This retains the whole number appearance without '.0'
-                let numberFormatter = NumberFormatter()
-                numberFormatter.numberStyle = .decimal
-                numberFormatter.maximumFractionDigits = 0 // Avoid decimal places for whole numbers
-                let number = NSNumber(value: result)
-                return numberFormatter.string(from: number) ?? "Error"
-            }
-        } else {
-            // For non-whole numbers, return as is with decimals
-            return String(result)
-        }
+        return integerCheck(result: result)
 
     }
 }

@@ -8,15 +8,15 @@
 import SwiftUI
 import SplitView
 
-struct CalculatorView: View {
+struct CalculatorMainView: View {
     var body: some View {
         HSplit {
-            Text("Left")
+            CalculatorView()
         } right: {
-            Text("Right")
+            HistoryView()
         }
-        .fraction(0.75)
-        .constraints(minPFraction: 0.75, minSFraction: 0.25) // Theoretically locking the splitter
+        .fraction(0.6)
+        .constraints(minPFraction: 0.6, minSFraction: 0.4) // Theoretically locking the splitter
         .splitter { Splitter.invisible() }
     }
 }

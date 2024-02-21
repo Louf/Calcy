@@ -11,6 +11,14 @@
 		BF889D642B801942003D27CE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF889D632B801942003D27CE /* ContentView.swift */; };
 		BF889D662B801944003D27CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF889D652B801944003D27CE /* Assets.xcassets */; };
 		BF889D692B801944003D27CE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF889D682B801944003D27CE /* Preview Assets.xcassets */; };
+		BF889D722B80198F003D27CE /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = BF889D712B80198F003D27CE /* HotKey */; };
+		BF889D752B801A25003D27CE /* CalculatorMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF889D742B801A25003D27CE /* CalculatorMainView.swift */; };
+		BF889D782B802727003D27CE /* SplitView in Frameworks */ = {isa = PBXBuildFile; productRef = BF889D772B802727003D27CE /* SplitView */; };
+		BF889D7A2B8028EA003D27CE /* CalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF889D792B8028EA003D27CE /* CalculatorView.swift */; };
+		BF889D7C2B803971003D27CE /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF889D7B2B803971003D27CE /* HistoryView.swift */; };
+		BF889D812B8595A4003D27CE /* PersistanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF889D802B8595A4003D27CE /* PersistanceController.swift */; };
+		BF889D842B8595DB003D27CE /* Calculation.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BF889D822B8595DB003D27CE /* Calculation.xcdatamodeld */; };
+		BF889D872B85975F003D27CE /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF889D862B85975F003D27CE /* DataManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +28,12 @@
 		BF889D652B801944003D27CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF889D682B801944003D27CE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BF889D6A2B801944003D27CE /* Calcy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Calcy.entitlements; sourceTree = "<group>"; };
+		BF889D742B801A25003D27CE /* CalculatorMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorMainView.swift; sourceTree = "<group>"; };
+		BF889D792B8028EA003D27CE /* CalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorView.swift; sourceTree = "<group>"; };
+		BF889D7B2B803971003D27CE /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		BF889D802B8595A4003D27CE /* PersistanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistanceController.swift; sourceTree = "<group>"; };
+		BF889D832B8595DB003D27CE /* Calculation.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Calculation.xcdatamodel; sourceTree = "<group>"; };
+		BF889D862B85975F003D27CE /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF889D782B802727003D27CE /* SplitView in Frameworks */,
+				BF889D722B80198F003D27CE /* HotKey in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +68,9 @@
 		BF889D602B801942003D27CE /* Calcy */ = {
 			isa = PBXGroup;
 			children = (
+				BF889D852B859758003D27CE /* Helpers */,
+				BF889D7D2B8425E7003D27CE /* Models */,
+				BF889D732B801A0F003D27CE /* Views */,
 				BF889D612B801942003D27CE /* CalcyApp.swift */,
 				BF889D632B801942003D27CE /* ContentView.swift */,
 				BF889D652B801944003D27CE /* Assets.xcassets */,
@@ -67,6 +86,33 @@
 				BF889D682B801944003D27CE /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		BF889D732B801A0F003D27CE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BF889D742B801A25003D27CE /* CalculatorMainView.swift */,
+				BF889D792B8028EA003D27CE /* CalculatorView.swift */,
+				BF889D7B2B803971003D27CE /* HistoryView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BF889D7D2B8425E7003D27CE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BF889D802B8595A4003D27CE /* PersistanceController.swift */,
+				BF889D822B8595DB003D27CE /* Calculation.xcdatamodeld */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BF889D852B859758003D27CE /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BF889D862B85975F003D27CE /* DataManager.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -85,6 +131,10 @@
 			dependencies = (
 			);
 			name = Calcy;
+			packageProductDependencies = (
+				BF889D712B80198F003D27CE /* HotKey */,
+				BF889D772B802727003D27CE /* SplitView */,
+			);
 			productName = Calcy;
 			productReference = BF889D5E2B801942003D27CE /* Calcy.app */;
 			productType = "com.apple.product-type.application";
@@ -113,6 +163,10 @@
 				Base,
 			);
 			mainGroup = BF889D552B801942003D27CE;
+			packageReferences = (
+				BF889D702B80198F003D27CE /* XCRemoteSwiftPackageReference "HotKey" */,
+				BF889D762B802727003D27CE /* XCRemoteSwiftPackageReference "SplitView" */,
+			);
 			productRefGroup = BF889D5F2B801942003D27CE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -139,8 +193,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF889D7A2B8028EA003D27CE /* CalculatorView.swift in Sources */,
+				BF889D872B85975F003D27CE /* DataManager.swift in Sources */,
 				BF889D642B801942003D27CE /* ContentView.swift in Sources */,
+				BF889D7C2B803971003D27CE /* HistoryView.swift in Sources */,
+				BF889D752B801A25003D27CE /* CalculatorMainView.swift in Sources */,
 				BF889D622B801942003D27CE /* CalcyApp.swift in Sources */,
+				BF889D812B8595A4003D27CE /* PersistanceController.swift in Sources */,
+				BF889D842B8595DB003D27CE /* Calculation.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +339,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -306,6 +367,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -341,6 +403,51 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BF889D702B80198F003D27CE /* XCRemoteSwiftPackageReference "HotKey" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/soffes/HotKey";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		BF889D762B802727003D27CE /* XCRemoteSwiftPackageReference "SplitView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stevengharris/SplitView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BF889D712B80198F003D27CE /* HotKey */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BF889D702B80198F003D27CE /* XCRemoteSwiftPackageReference "HotKey" */;
+			productName = HotKey;
+		};
+		BF889D772B802727003D27CE /* SplitView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BF889D762B802727003D27CE /* XCRemoteSwiftPackageReference "SplitView" */;
+			productName = SplitView;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		BF889D822B8595DB003D27CE /* Calculation.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				BF889D832B8595DB003D27CE /* Calculation.xcdatamodel */,
+			);
+			currentVersion = BF889D832B8595DB003D27CE /* Calculation.xcdatamodel */;
+			path = Calculation.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = BF889D562B801942003D27CE /* Project object */;
 }

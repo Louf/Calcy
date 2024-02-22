@@ -108,7 +108,13 @@ struct HistoryView: View {
         .padding()
         .overlay {
             if allCalculations.isEmpty {
-                ContentUnavailableView("No history", systemImage: "tray.fill")
+                if #available(macOS 14.0, *) {
+                    ContentUnavailableView("No history", systemImage: "tray.fill")
+                } else {
+                    // Fallback on earlier versions
+                    Text("No items")
+                        .font(.title)
+                }
             }
         }
     }

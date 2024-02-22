@@ -59,10 +59,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject, NSWindowDe
         
         self.menu = NSMenu()
 
-        menu.addItem(NSMenuItem(title: "About Calcy", action: #selector(openAboutScreen), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "About Calcy", action: #selector(openAboutScreen), keyEquivalent: "a"))
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Visit GitHub", action: #selector(openGitHub), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Visit Calcy Website", action: #selector(openCalcyWebsite), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Visit our website", action: #selector(openCalcyWebsite), keyEquivalent: ""))
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
 
@@ -96,6 +96,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject, NSWindowDe
         
         aboutWindow?.center()
         aboutWindow?.title = "About Calcy"
+        //This line prevented the app from crashing when I closed the about view
         aboutWindow?.isReleasedWhenClosed = false
 
         // Create a vertical stack view to hold all components
@@ -107,8 +108,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject, NSWindowDe
         stackView.edgeInsets = NSEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
 
         // App Icon
-        let imageView = NSImageView(frame: NSRect(x: 0, y: 0, width: 64, height: 64))
-        imageView.image = NSImage(systemSymbolName: "number.square.fill", accessibilityDescription: nil) // Example system symbol
+        let imageView = NSImageView(frame: NSRect(x: 0, y: 0, width: 128, height: 128))
+
+        // Create a symbol configuration with your desired font size
+        let symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 64, weight: .regular) // Adjust the pointSize to scale the symbol
+
+        // Apply the configuration to the system symbol
+        if let image = NSImage(systemSymbolName: "number.square.fill", accessibilityDescription: nil)?.withSymbolConfiguration(symbolConfiguration) {
+            imageView.image = image
+        }
+        
+
         stackView.addArrangedSubview(imageView)
 
         // App Name

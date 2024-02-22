@@ -46,15 +46,19 @@ struct CalculatorView: View {
     ]
     
     @State private var displayValue = "0"
+    
+    @State private var lastOperation: String? = nil
     @State private var currentOperation: String? = nil
     @State private var previousValue: String? = nil
     @State private var pressedEquals = false
     
     @State private var lastCalculation: String = ""
-    @State private var isOperationIn = false
+    @State private var operationActive = false
     
     @State private var hoveringResult = false
     @State private var isPressed = false // Track the press state
+    
+    @State private var runningTotal: String? = nil // Keeps track of the running total
     
     @Environment(\.managedObjectContext) private var context
     
@@ -66,9 +70,10 @@ struct CalculatorView: View {
         GeometryReader { geometry in
             VStack {
                 HStack {
-                    Text(currentOperation ?? "")
+                    Text(currentOperation == nil ? (lastOperation ?? "") : currentOperation ?? "")
                         .font(.title)
                     Spacer()
+//                    Text(runningTotal ?? "0")
                     Text(displayValue)
                         .font(.largeTitle) // You can adjust the font size as needed
                         .lineLimit(1) // Ensure the text stays within one line
@@ -169,8 +174,10 @@ struct CalculatorView: View {
             displayValue = "0"
             previousValue = nil
             currentOperation = nil
+            lastOperation = nil
             pressedEquals = false
             lastCalculation = ""
+            runningTotal = nil
         case "+/-":
             if displayValue != "0", let value = Double(displayValue) {
                 displayValue = integerCheck(result: value * -1)
@@ -180,27 +187,39 @@ struct CalculatorView: View {
                 displayValue = String(value / 100)
             }
         case "=":
-            if let operation = currentOperation, let previousValue = previousValue, let previous = Double(previousValue), let current = Double(displayValue) {
-                lastCalculation += "\(displayValue)"
-                
-                displayValue = calculate(operation: operation, previousValue: previous, currentValue: current)
-                
-                //Add the calculation after the display value is updated so we get the correct value
-                dataManager.addHistoryItem(operation: lastCalculation, result: displayValue, context: context)
-                
-                //Reset some values after calculation
-                isOperationIn = false
-                self.previousValue = nil
-                currentOperation = nil
-                pressedEquals = true
-                lastCalculation = ""
+            if !operationActive {
+                if let operation = lastOperation, let current = Double(displayValue), let runningTotal = Double(runningTotal ?? "0") {
+                    lastCalculation += "\(displayValue)"
+                    
+                    displayValue = calculate(operation: operation, runningTotal: runningTotal, currentValue: current)
+                    
+                    //Add the calculation after the display value is updated so we get the correct value
+                    dataManager.addHistoryItem(operation: lastCalculation, result: displayValue, context: context)
+                    
+                    //Reset some values after calculation
+                    operationActive = false
+                    self.previousValue = nil
+                    currentOperation = nil
+                    lastOperation = nil
+                    pressedEquals = true
+                    lastCalculation = ""
+                    self.runningTotal = nil
+                }
             }
         case "÷", "×", "-", "+":
-            if currentOperation == nil && !(displayValue == ".") {
+            if currentOperation == nil && !(displayValue == "."){
                 currentOperation = button
+                operationActive = true
                 lastCalculation += "\(displayValue) "
                 previousValue = displayValue
-                displayValue = "0"
+                if runningTotal == nil {
+                    runningTotal = displayValue
+                } else {
+                    if let operation = lastOperation, let current = Double(displayValue), let runningTotal = Double(runningTotal ?? "0") {
+                        displayValue = calculate(operation: operation, runningTotal: runningTotal, currentValue: current)
+                        self.runningTotal = displayValue
+                    }
+                }
                 pressedEquals = false
                 //Make sure we can't do an operation if the user just puts a decimal point with nothing else
             } else if !(displayValue == ".") {
@@ -209,15 +228,15 @@ struct CalculatorView: View {
         default:
             //This is any number button
             if currentOperation != nil {
-                if !isOperationIn {
-                    lastCalculation += "\(currentOperation ?? "") "
-                    isOperationIn = true
-                }
+                lastOperation = currentOperation
+                lastCalculation += "\(currentOperation ?? "") "
             }
             
             if !(displayValue.contains(".") && button == ".") {
-                if displayValue == "0" || currentOperation != nil && previousValue == nil {
+                if displayValue == "0" || operationActive == true || currentOperation != nil && previousValue == nil {
                     displayValue = button
+                    currentOperation = nil
+                    operationActive = false
                 } else {
                     if pressedEquals == true {
                         displayValue = button
@@ -282,26 +301,27 @@ struct CalculatorView: View {
         }
     }
     
-    private func calculate(operation: String, previousValue: Double, currentValue: Double) -> String {
+    private func calculate(operation: String, runningTotal: Double, currentValue: Double) -> String {
         let result: Double
 
         switch operation {
         case "+":
-            result = previousValue + currentValue
+            result = runningTotal + currentValue
         case "-":
-            result = previousValue - currentValue
+            result = runningTotal - currentValue
         case "×":
-            result = previousValue * currentValue
+            result = runningTotal * currentValue
         case "÷":
             if currentValue == 0 {
                 return "Error" // Return error if dividing by zero
             } else {
-                result = previousValue / currentValue
+                result = runningTotal / currentValue
             }
         default:
             return "0"
         }
 
+        //Returns the modified runningTotal
         return integerCheck(result: result)
 
     }

@@ -26,9 +26,11 @@ struct CalcyApp: App {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
+class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject, NSWindowDelegate {
     private var statusItem: NSStatusItem!
     private var popover: NSPopover!
+    private var menu: NSMenu!
+    private var aboutWindow: NSWindow?
     let openHotKey = HotKey(key: .v, modifiers: [.shift, .command])
 
     @MainActor func applicationDidFinishLaunching(_ notification: Notification) {
@@ -40,7 +42,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         
         if let statusButton = statusItem.button {
             statusButton.image = NSImage(systemSymbolName: "number.square.fill", accessibilityDescription: "Calcy")
-            statusButton.action = #selector(togglePopover)
+            statusButton.action = #selector(handleClick(_:))
+            statusButton.target = self
+            statusButton.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
         
         openHotKey.keyUpHandler = {
@@ -52,6 +56,113 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         self.popover.behavior = .transient
         self.popover.contentViewController = NSHostingController(rootView: rootView)
         self.popover.contentViewController?.view.window?.makeKey()
+        
+        self.menu = NSMenu()
+
+        menu.addItem(NSMenuItem(title: "About Calcy", action: #selector(openAboutScreen), keyEquivalent: ""))
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "Visit GitHub", action: #selector(openGitHub), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Visit Calcy Website", action: #selector(openCalcyWebsite), keyEquivalent: ""))
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+
+    }
+
+    @objc func handleClick(_ sender: NSButton) {
+        let event = NSApp.currentEvent!
+        if event.type == NSEvent.EventType.rightMouseUp {
+            // Handle right-click
+            showOptionMenu(for: sender)
+        } else {
+            // Handle left-click
+            togglePopover()
+        }
+    }
+    
+    // MARK: - Menu Actions
+    @objc func openAboutScreen() {
+        guard aboutWindow == nil else {
+            aboutWindow?.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+
+        // Initialize the aboutWindow here as before...
+        aboutWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 250, height: 200),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false)
+        
+        aboutWindow?.center()
+        aboutWindow?.title = "About Calcy"
+        aboutWindow?.isReleasedWhenClosed = false
+
+        // Create a vertical stack view to hold all components
+        let stackView = NSStackView()
+        stackView.orientation = .vertical
+        stackView.alignment = .centerX
+        stackView.distribution = .equalSpacing
+        stackView.spacing = 10
+        stackView.edgeInsets = NSEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+
+        // App Icon
+        let imageView = NSImageView(frame: NSRect(x: 0, y: 0, width: 64, height: 64))
+        imageView.image = NSImage(systemSymbolName: "number.square.fill", accessibilityDescription: nil) // Example system symbol
+        stackView.addArrangedSubview(imageView)
+
+        // App Name
+        let appNameLabel = NSTextField(labelWithString: "Calcy")
+        appNameLabel.font = NSFont.systemFont(ofSize: 18, weight: .medium)
+        stackView.addArrangedSubview(appNameLabel)
+
+        // Version
+        let versionLabel = NSTextField(labelWithString: "Version 1.0.0")
+        stackView.addArrangedSubview(versionLabel)
+
+        // Developer Name
+        let developerLabel = NSTextField(labelWithString: "Louis Farmer")
+        stackView.addArrangedSubview(developerLabel)
+
+        // Copyright
+        let copyrightLabel = NSTextField(labelWithString: "Copyright © 2024 Louis Farmer")
+        stackView.addArrangedSubview(copyrightLabel)
+
+        // Add stackView to the window's contentView
+        if let contentView = aboutWindow?.contentView {
+            contentView.addSubview(stackView)
+            stackView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                stackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+                stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+                stackView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.8)
+            ])
+        }
+
+        // Show the window
+        aboutWindow?.delegate = self
+        
+        // Show the window
+        aboutWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    @objc func openGitHub() {
+        if let url = URL(string: "https://github.com/Louf/calcy") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    @objc func openCalcyWebsite() {
+        if let url = URL(string: "https://www.calcywebsite.com") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    @objc func showOptionMenu(for sender: NSButton) {
+        // Ensure the menu is updated if needed, then display it
+        let menuLocation = NSPoint(x: 0, y: sender.bounds.height)
+        menu.popUp(positioning: nil, at: menuLocation, in: sender)
     }
     
     @objc func togglePopover() {
@@ -72,4 +183,3 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
     
 }
-

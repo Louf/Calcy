@@ -1,10 +1,3 @@
-//
-//  CalcyApp.swift
-//  Calcy
-//
-//  Created by Louis Farmer on 2/16/24.
-//
-
 import SwiftUI
 import SwiftData
 import Cocoa
@@ -15,14 +8,10 @@ struct CalcyApp: App {
     
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     
-
-    
     var body: some Scene {
         Settings {
             EmptyView()
         }
-//        .modelContainer(modelContainer)
-
     }
 }
 
@@ -37,7 +26,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject, NSWindowDe
         //Init the rootView along with the modelContainer containing the Calculation
         let rootView = CalculatorMainView().environment(\.managedObjectContext, PersistanceController.shared.container.viewContext)
 
-        
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         
         if let statusButton = statusItem.button {
@@ -108,16 +96,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject, NSWindowDe
         stackView.edgeInsets = NSEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
 
         // App Icon
-        let imageView = NSImageView(frame: NSRect(x: 0, y: 0, width: 128, height: 128))
+        let imageView = NSImageView(frame: NSRect(x: 0, y: 0, width: 64, height: 64))
+        imageView.wantsLayer = true
+        imageView.layer?.cornerRadius = 15 // Adjust the corner radius as needed
+        imageView.layer?.masksToBounds = true
 
-        // Create a symbol configuration with your desired font size
-        let symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 64, weight: .regular) // Adjust the pointSize to scale the symbol
-
-        // Apply the configuration to the system symbol
-        if let image = NSImage(systemSymbolName: "number.square.fill", accessibilityDescription: nil)?.withSymbolConfiguration(symbolConfiguration) {
+        if let image = NSImage(named: "AboutIcon") {
             imageView.image = image
+            // Optionally, you might want to adjust the image scaling mode
+            imageView.imageScaling = .scaleProportionallyUpOrDown
         }
-        
 
         stackView.addArrangedSubview(imageView)
 
@@ -130,12 +118,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject, NSWindowDe
         let versionLabel = NSTextField(labelWithString: "Version 1.0.0")
         stackView.addArrangedSubview(versionLabel)
 
-        // Developer Name
-        let developerLabel = NSTextField(labelWithString: "Louis Farmer")
-        stackView.addArrangedSubview(developerLabel)
-
         // Copyright
-        let copyrightLabel = NSTextField(labelWithString: "Copyright © 2024 Louis Farmer")
+        let copyrightLabel = NSTextField(labelWithString: "Copyright © 2024 ")
         stackView.addArrangedSubview(copyrightLabel)
 
         // Add stackView to the window's contentView

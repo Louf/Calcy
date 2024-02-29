@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Calcy
-//
-//  Created by Louis Farmer on 2/16/24.
-//
-
 import SwiftUI
 
 struct ContentView: View {

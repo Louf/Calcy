@@ -1,10 +1,3 @@
-//
-//  CalculatorView.swift
-//  Calcy
-//
-//  Created by Louis Farmer on 2/16/24.
-//
-
 import SwiftUI
 
 struct CalculatorButton: View {
@@ -191,12 +184,13 @@ struct CalculatorView: View {
                 if let operation = lastOperation, let current = Double(displayValue), let runningTotal = Double(runningTotal ?? "0") {
                     lastCalculation += "\(displayValue)"
                     
+                    //Now calculate based on the running total, so we can have a running total
                     displayValue = calculate(operation: operation, runningTotal: runningTotal, currentValue: current)
                     
                     //Add the calculation after the display value is updated so we get the correct value
                     dataManager.addHistoryItem(operation: lastCalculation, result: displayValue, context: context)
                     
-                    //Reset some values after calculation
+                    //Reset values after calculation
                     operationActive = false
                     self.previousValue = nil
                     currentOperation = nil
@@ -207,11 +201,14 @@ struct CalculatorView: View {
                 }
             }
         case "÷", "×", "-", "+":
+            //Current operation should always be nil when we get here, if it's not we will just switch operations (it means the user has selected an operation but not yet typed in any numbers)
             if currentOperation == nil && !(displayValue == "."){
                 currentOperation = button
                 operationActive = true
                 lastCalculation += "\(displayValue) "
                 previousValue = displayValue
+                
+                //If we don't have a running total, start the running total by setting it to the display value
                 if runningTotal == nil {
                     runningTotal = displayValue
                 } else {
